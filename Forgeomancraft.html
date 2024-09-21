@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Geo Oman Craft</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Forge OmanCraft Server</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="omancraftserver.html">Oman Craft Server</a></li>
+                <li><a href="Forgeomancraft.html">Forge OmanCraft Server</a></li>
+                <li><a href="news.html">NEWS</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2 align="center" style="color: white;">Welcome To Forge OmanCraft Server</h2>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Oman Website</p>
+    </footer>
+
+    <hr>
+    <h2 style="color: white;" align="left">
+        SERVER.Address: Forgeomancraftserver.aternos.me 
+        <button style="font-size: 25px; border-radius:10px; background-color:gray" onclick="copyToClipboard()">copyAddress</button>
+    </h2>
+    
+    <script>
+        function copyToClipboard() {
+            // Create a temporary element to hold the text
+            var tempInput = document.createElement('input');
+            tempInput.value = "Forgeomancraftserver.aternos.me";
+            
+            // Append the input to the body and select the text
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999); // For mobile devices
+            
+            // Copy the selected text to the clipboard
+            document.execCommand("copy");
+            
+            // Remove the temporary element
+            document.body.removeChild(tempInput);
+    
+            // Optionally, alert the user that the text was copied
+            alert("Server address copied to clipboard!");
+        }
+    </script>
+    <h2 style="color: white;" align="left">SERVER.SOFTWARE: Forge</h2>
+    <h2 style="color: white;" align="left">SERVER.Version: 1.20.1</h2>
+    <h2 style="color: white;" align="left">SERVER.Moods: True</h2>
+    <h2 style="color: white;" align="left">DownloadMoods: <a href="forgeomancraft-moods/forgeomancraftmods 21-09-2024-07_42_54.zip" download class="download-btn">DownloadMoods</a>  </h2>
+    
+
+</body>
+</html>

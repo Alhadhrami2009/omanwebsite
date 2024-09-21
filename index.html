@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Oman Website</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1 style="color: white;">OmanWebsite</h1>
+        <nav>
+            <ul>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="omancraftserver.html">Oman Craft Server</a></li>
+                    <li><a href="Forgeomancraft.html">Forge OmanCraft Server</a></li>
+                    <li><a href="news.html">NEWS</a></li>
+                </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2 align="center" style="color: white;">Welcome to Oman Website</h2>
+            <p style="color: white;" id="date" align="center"></p>
+            <p style="color: white;" id="clock" align="center"></p> <!-- Digital clock -->
+        </section>
+    </main>
+    <footer>
+        <p style="color: white;">&copy; 2024 Oman Website</p>
+    </footer>
+
+    <script style="color: white;">
+        // Function to display the current date and day
+        function displayDate() {
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = today.toLocaleDateString('en-US', options);
+            document.getElementById('date').textContent = `Today is: ${formattedDate}`;
+        }
+
+        // Function to display the current time (digital clock)
+        function displayClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeString = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('clock').textContent = `Current Time: ${timeString}`;
+        }
+
+        // Call the functions to display the date and update the clock every second
+        displayDate();
+        setInterval(displayClock, 1000); // Updates the clock every second
+    </script>
+
+<hr>
+<h1>
+<img  src="pictures/oman craft icon.jpeg" height="200" width="200">
+<img  src="pictures/oman craft icon.jpeg" height="200" width="200">
+<img  src="pictures/oman craft icon.jpeg" height="200" width="200">
+<img  src="pictures/oman craft icon.jpeg" height="200" width="200">
+<img  src="pictures/oman craft icon.jpeg" height="200" width="200">
+<img  src="pictures/oman craft icon.jpeg" height="200" width="200">
+<img  src="pictures/oman craft icon.jpeg" height="200" width="200">
+<img  src="pictures/oman craft icon.jpeg" height="200" width="200">
+<img  src="pictures/oman craft icon.jpeg" height="200" width="200">
+</h1>
+<hr>
+
+
+
+
+</body>
+</html>
