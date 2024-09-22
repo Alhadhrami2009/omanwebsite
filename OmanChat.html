@@ -69,7 +69,6 @@
             display: flex;
             width: 90%;
             max-width: 600px;
-            justify-content: space-between;
         }
         .message-box input {
             flex-grow: 1;
@@ -83,14 +82,6 @@
         .message-box input:focus {
             outline: none;
         }
-        .enter-button {
-            background-color: #FFFFFF;
-            color: #202123;
-            border: none;
-            border-radius: 10px;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
         .info {
             font-size: 12px;
             color: #A0A0A0;
@@ -101,7 +92,7 @@
     <script type="module">
         // Import Firebase SDKs
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-        import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+        import { getDatabase, ref, push, onChildAdded, remove, query, orderByKey, limitToFirst, set } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
         // Firebase configuration
         const firebaseConfig = {
@@ -118,13 +109,15 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
+        const messagesRef = ref(database, 'messages');
+        const resetDateRef = ref(database, 'resetDate'); // A place to store the last reset date
+        let messageCount = 0;
 
         // Function to send a message
         function sendMessage() {
             const input = document.getElementById('message-input');
             const message = input.value;
             if (message.trim() !== "") {
-                const messagesRef = ref(database, 'messages');
                 push(messagesRef, {
                     text: message,
                     timestamp: Date.now()
@@ -143,6 +136,33 @@
             messageDisplay.scrollTop = messageDisplay.scrollHeight;
         }
 
+        // Function to remove the oldest message
+        function deleteOldestMessage() {
+            const oldestMessageQuery = query(messagesRef, orderByKey(), limitToFirst(1));
+            oldestMessageQuery.once('value', (snapshot) => {
+                const key = Object.keys(snapshot.val())[0]; // Get the key of the oldest message
+                const oldestMessageRef = ref(database, 'messages/' + key);
+                remove(oldestMessageRef); // Delete the oldest message
+            });
+        }
+
+        // Function to reset all messages
+        function resetAllMessages() {
+            remove(messagesRef); // Remove all messages
+        }
+
+        // Function to check if we need to reset the chat
+        function checkAndResetChat() {
+            const currentDate = new Date().toLocaleDateString(); // Get current date as a string (format: MM/DD/YYYY)
+            resetDateRef.once('value', (snapshot) => {
+                const lastResetDate = snapshot.val();
+                if (lastResetDate !== currentDate) {
+                    resetAllMessages(); // Reset chat if the date is different
+                    set(resetDateRef, currentDate); // Update the reset date in the database
+                }
+            });
+        }
+
         // Listen for new messages from the database
         document.addEventListener('DOMContentLoaded', () => {
             const input = document.getElementById('message-input');
@@ -152,10 +172,19 @@
                 }
             });
 
-            const messagesRef = ref(database, 'messages');
+            checkAndResetChat(); // Check if we need to reset the chat on load
+
             onChildAdded(messagesRef, (snapshot) => {
                 const message = snapshot.val();
                 displayMessage(message);
+
+                // Increment message count
+                messageCount++;
+
+                // If there are more than 25 messages, delete the oldest one
+                if (messageCount > 25) {
+                    deleteOldestMessage();
+                }
             });
         });
     </script>
@@ -169,7 +198,6 @@
     <div class="footer">
         <div class="message-box">
             <input type="text" id="message-input" placeholder="Message OmanChat">
-            <button class="enter-button" onclick="sendMessage()">Enter</button>
         </div>
         <div class="info">
             OmanChat can make mistakes. Check important info.
