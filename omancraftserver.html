@@ -32,28 +32,41 @@
 <h1 align="center">Check Minecraft Server Status</h1>
     <div id="status" align="center">Checking status...</div>
     
-    <script>
+     <script>
         const serverAddress = "forgeomancraft1201.aternos.me";
         const port = 39025;
         
         function checkServerStatus() {
+            // Attempt to fetch server status
             fetch(`https://api.mcsrvstat.us/2/${serverAddress}:${port}`)
-                .then(response => response.json())
+                .then(response => {
+                    // Parse the response to JSON
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     const statusDiv = document.getElementById('status');
+                    const errorDiv = document.getElementById('error');
+                    console.log(data); // Output the full response for debugging
+
                     if (data.online) {
                         statusDiv.innerHTML = `<span style="color: green;">Server is Online</span><br>
-                                               <strong>Players Online:</strong> ${data.players.online}`;
+                                               <strong>Players Online:</strong> ${data.players.online || 0}`;
+                        errorDiv.innerHTML = ''; // Clear error message
                     } else {
                         statusDiv.innerHTML = `<span style="color: red;">Server is Offline</span>`;
                     }
                 })
                 .catch(error => {
-                    document.getElementById('status').innerHTML = 'Error checking server status';
+                    const errorDiv = document.getElementById('error');
+                    errorDiv.innerHTML = `Error checking server status: ${error.message}`;
                     console.error('Error:', error);
                 });
         }
 
+        // Call the function to check the server status
         checkServerStatus();
     </script>
 
