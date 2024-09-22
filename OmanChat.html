@@ -92,7 +92,7 @@
     <script type="module">
         // Import Firebase SDKs
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-        import { getDatabase, ref, push, onChildAdded, remove, query, orderByKey, limitToFirst, set } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+        import { getDatabase, ref, push, onChildAdded, remove, query, orderByKey, limitToFirst } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
         // Firebase configuration
         const firebaseConfig = {
@@ -110,7 +110,6 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const messagesRef = ref(database, 'messages');
-        const resetDateRef = ref(database, 'resetDate'); // A place to store the last reset date
         let messageCount = 0;
 
         // Function to send a message
@@ -146,23 +145,6 @@
             });
         }
 
-        // Function to reset all messages
-        function resetAllMessages() {
-            remove(messagesRef); // Remove all messages
-        }
-
-        // Function to check if we need to reset the chat
-        function checkAndResetChat() {
-            const currentDate = new Date().toLocaleDateString(); // Get current date as a string (format: MM/DD/YYYY)
-            resetDateRef.once('value', (snapshot) => {
-                const lastResetDate = snapshot.val();
-                if (lastResetDate !== currentDate) {
-                    resetAllMessages(); // Reset chat if the date is different
-                    set(resetDateRef, currentDate); // Update the reset date in the database
-                }
-            });
-        }
-
         // Listen for new messages from the database
         document.addEventListener('DOMContentLoaded', () => {
             const input = document.getElementById('message-input');
@@ -171,8 +153,6 @@
                     sendMessage();
                 }
             });
-
-            checkAndResetChat(); // Check if we need to reset the chat on load
 
             onChildAdded(messagesRef, (snapshot) => {
                 const message = snapshot.val();
