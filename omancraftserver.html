@@ -26,7 +26,36 @@
     <footer>
         <p>&copy; 2024 Oman Website</p>
     </footer>
+<h1>Check Minecraft Server Status</h1>
+    <div id="status">Checking status...</div>
 
+    <script>
+        const serverAddress = "forgeomancraft1201.aternos.me";
+        const port = 39025;
+        
+        function checkServerStatus() {
+            fetch(`https://api.mcsrvstat.us/2/${serverAddress}:${port}`)
+                .then(response => response.json())
+                .then(data => {
+                    const statusDiv = document.getElementById('status');
+                    if (data.online) {
+                        statusDiv.innerHTML = `<span style="color: green;">Server is Online</span><br>
+                                               <strong>Players Online:</strong> ${data.players.online}`;
+                    } else {
+                        statusDiv.innerHTML = `<span style="color: red;">Server is Offline</span>`;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('status').innerHTML = 'Error checking server status';
+                    console.error('Error:', error);
+                });
+        }
+
+        checkServerStatus();
+    </script>
+
+
+    
     <h2 style="color: white;" align="left">
         SERVER.Address: forgeomancraft1201.aternos.me:39025 
         <button style="font-size: 25px; border-radius:10px; background-color:gray" onclick="copyToClipboard()">copyAddress</button>
