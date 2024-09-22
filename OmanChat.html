@@ -1,7 +1,9 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>OmanChat</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmanChat</title>
     <style>
         body {
             background-color: #202123;
@@ -19,18 +21,16 @@
             position: absolute;
             top: 20px;
             left: 20px;
-            display: flex;
-            align-items: center;
         }
-        .header .back-button {
+        .back-button {
             background-color: #FFFFFF;
             color: #202123;
             border: none;
             border-radius: 10px;
             padding: 5px 10px;
-            cursor: pointer;
             text-decoration: none;
             font-size: 16px;
+            cursor: pointer;
         }
         .logo {
             margin-bottom: 30px;
@@ -41,7 +41,6 @@
             width: 100%;
             max-width: 600px;
             padding: 20px;
-            box-sizing: border-box;
             overflow-y: auto;
         }
         .message {
@@ -60,22 +59,19 @@
         .footer {
             width: 100%;
             display: flex;
-            flex-direction: column;
             align-items: center;
             padding: 10px;
-            box-sizing: border-box;
         }
-        .footer .message-box {
+        .message-box {
             background-color: #3A3B42;
             border-radius: 20px;
             padding: 10px 20px;
             display: flex;
-            align-items: center;
             width: 90%;
             max-width: 600px;
             justify-content: space-between;
         }
-        .footer .message-box input {
+        .message-box input {
             flex-grow: 1;
             background-color: #3A3B42;
             border: none;
@@ -84,10 +80,10 @@
             margin-right: 10px;
             border-radius: 10px;
         }
-        .footer .message-box input:focus {
+        .message-box input:focus {
             outline: none;
         }
-        .footer .message-box .enter-button {
+        .enter-button {
             background-color: #FFFFFF;
             color: #202123;
             border: none;
@@ -95,40 +91,41 @@
             padding: 5px 10px;
             cursor: pointer;
         }
-        .footer .info {
+        .info {
             font-size: 12px;
             color: #A0A0A0;
             margin-top: 10px;
             text-align: center;
         }
     </style>
-    <!-- Add Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-    <script>
-        // Your Firebase configuration
+    <script type="module">
+        // Import Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+        import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+
+        // Firebase configuration
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            databaseURL: "YOUR_DATABASE_URL",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyCmmaOsJsd_CJo7CTf4uOngPSXWEfbnmGQ",
+            authDomain: "omanchat-15.firebaseapp.com",
+            databaseURL: "https://omanchat-15-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "omanchat-15",
+            storageBucket: "omanchat-15.appspot.com",
+            messagingSenderId: "660153378719",
+            appId: "1:660153378719:web:6eb705fe8d21fd473b3faa",
+            measurementId: "G-4Y386FTP5J"
         };
 
         // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
 
-        const MAX_MESSAGES = 13;
-
+        // Function to send a message
         function sendMessage() {
             const input = document.getElementById('message-input');
             const message = input.value;
             if (message.trim() !== "") {
-                const messagesRef = database.ref('messages');
-                messagesRef.push().set({
+                const messagesRef = ref(database, 'messages');
+                push(messagesRef, {
                     text: message,
                     timestamp: Date.now()
                 });
@@ -136,6 +133,7 @@
             }
         }
 
+        // Function to display a message
         function displayMessage(message) {
             const messageDisplay = document.getElementById('message-display');
             const newMessage = document.createElement('div');
@@ -143,15 +141,10 @@
             newMessage.innerText = message.text;
             messageDisplay.appendChild(newMessage);
             messageDisplay.scrollTop = messageDisplay.scrollHeight;
-
-            // Remove the first message if there are more than MAX_MESSAGES
-            const messages = messageDisplay.getElementsByClassName('message');
-            if (messages.length > MAX_MESSAGES) {
-                messageDisplay.removeChild(messages[0]);
-            }
         }
 
-        document.addEventListener('DOMContentLoaded', (event) => {
+        // Listen for new messages from the database
+        document.addEventListener('DOMContentLoaded', () => {
             const input = document.getElementById('message-input');
             input.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
@@ -159,8 +152,8 @@
                 }
             });
 
-            const messagesRef = database.ref('messages');
-            messagesRef.on('child_added', (snapshot) => {
+            const messagesRef = ref(database, 'messages');
+            onChildAdded(messagesRef, (snapshot) => {
                 const message = snapshot.val();
                 displayMessage(message);
             });
@@ -171,9 +164,7 @@
     <div class="header">
         <a href="index.html" class="back-button">Back</a>
     </div>
-    <div class="logo" id="logo">
-        OmanChat
-    </div>
+    <div class="logo">OmanChat</div>
     <div class="messages" id="message-display"></div>
     <div class="footer">
         <div class="message-box">
